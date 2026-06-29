@@ -52,7 +52,7 @@ export default function CommunityScreen() {
         <Image source={{ uri: item.author.avatar }} style={styles.avatar} />
         <View style={styles.authorInfo}>
           <Text style={styles.authorName}>{item.author.name}</Text>
-          <Text style={styles.meta}>{item.author.location} · {item.createdAt}</Text>
+          <Text style={styles.meta}>{item.author.region} · {item.createdAt}</Text>
         </View>
       </View>
       <Text style={styles.content}>{item.content}</Text>
@@ -144,11 +144,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: { fontSize: 22, fontWeight: '700', color: '#111' },
   list: { paddingBottom: 80 },
-  card: {
-    backgroundColor: '#fff',
-    marginTop: 8,
-    padding: 16,
-  },
+  card: { backgroundColor: '#fff', marginTop: 8, padding: 16 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   avatar: { width: 42, height: 42, borderRadius: 21, marginRight: 10 },
   authorInfo: { flex: 1 },
@@ -159,38 +155,19 @@ const styles = StyleSheet.create({
   actionBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   actionText: { fontSize: 14, color: '#888' },
   fab: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#FF4B6E',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    position: 'absolute', bottom: 24, right: 24, width: 56, height: 56,
+    borderRadius: 28, backgroundColor: '#FF4B6E', justifyContent: 'center',
+    alignItems: 'center', elevation: 4, shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'flex-end',
-  },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'flex-end' },
   modalContainer: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
-    minHeight: 250,
+    backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20,
+    padding: 16, minHeight: 250,
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    flexDirection: 'row', justifyContent: 'space-between',
+    alignItems: 'center', marginBottom: 16,
   },
   cancelText: { fontSize: 15, color: '#888' },
   modalTitle: { fontSize: 16, fontWeight: '600' },
@@ -198,11 +175,7 @@ const styles = StyleSheet.create({
   postBtnDisabled: { color: '#ccc' },
   composeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   textInput: {
-    flex: 1,
-    fontSize: 15,
-    color: '#111',
-    lineHeight: 22,
-    maxHeight: 200,
-    textAlignVertical: 'top',
+    flex: 1, fontSize: 15, color: '#111', lineHeight: 22,
+    maxHeight: 200, textAlignVertical: 'top',
   },
 });

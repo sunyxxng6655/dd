@@ -1,13 +1,7 @@
 import React from 'react';
 import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Alert,
+  Modal, View, Text, StyleSheet, TouchableOpacity,
+  Image, ScrollView, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { JobPosting } from '../types';
@@ -22,7 +16,7 @@ export default function JobDetailModal({ job, onClose }: Props) {
   const handleContact = () => {
     const existing = chatRooms.find((r) => r.jobPostingId === job.id);
     if (existing) {
-      Alert.alert('이미 채팅 중', '이 구인글 작성자와 이미 채팅이 진행 중입니다.');
+      Alert.alert('이미 채팅 중', '이 글 작성자와 이미 채팅이 진행 중입니다.');
     } else {
       Alert.alert(
         '채팅 보내기',
@@ -31,10 +25,7 @@ export default function JobDetailModal({ job, onClose }: Props) {
           { text: '취소', style: 'cancel' },
           {
             text: '채팅 시작',
-            onPress: () => {
-              onClose();
-              Alert.alert('채팅 시작됨', '채팅 탭에서 확인하세요!');
-            },
+            onPress: () => { onClose(); Alert.alert('채팅 시작됨', '채팅 탭에서 확인하세요!'); },
           },
         ]
       );
@@ -46,7 +37,6 @@ export default function JobDetailModal({ job, onClose }: Props) {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.handle} />
-
           <View style={styles.headerRow}>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
               <Ionicons name="close" size={24} color="#333" />
@@ -56,42 +46,65 @@ export default function JobDetailModal({ job, onClose }: Props) {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.authorSection}>
               <Image source={{ uri: job.author.avatar }} style={styles.avatar} />
-              <View>
-                <Text style={styles.authorName}>{job.author.name}</Text>
-                <Text style={styles.authorBio}>{job.author.bio}</Text>
+              <View style={styles.authorInfo}>
+                <Text style={styles.authorName}>{job.author.name} · {job.author.age}세</Text>
+                <Text style={styles.authorRegion}>
+                  <Ionicons name="location-outline" size={13} /> {job.author.region}
+                </Text>
               </View>
             </View>
 
             <Text style={styles.title}>{job.title}</Text>
 
-            <View style={styles.metaRow}>
-              <View style={styles.metaItem}>
-                <Ionicons name="location-outline" size={15} color="#888" />
-                <Text style={styles.metaText}>{job.location}</Text>
+            <View style={styles.infoRow}>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>키</Text>
+                <Text style={styles.infoValue}>
+                  {job.author.hideHeight ? '비공개' : `${job.author.height}cm`}
+                </Text>
               </View>
-              {job.salary && (
-                <View style={styles.metaItem}>
-                  <Ionicons name="cash-outline" size={15} color="#888" />
-                  <Text style={styles.metaText}>{job.salary}</Text>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>몸무게</Text>
+                <Text style={styles.infoValue}>
+                  {job.author.hideWeight ? '비공개' : `${job.author.weight}kg`}
+                </Text>
+              </View>
+              {(job.minHeight || job.maxHeight) && (
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>희망 키</Text>
+                  <Text style={styles.infoValue}>
+                    {job.minHeight ? `${job.minHeight}cm` : ''}{job.minHeight && job.maxHeight ? ' ~ ' : ''}{job.maxHeight ? `${job.maxHeight}cm` : ''}
+                  </Text>
                 </View>
               )}
-              <View style={styles.metaItem}>
-                <Ionicons name="time-outline" size={15} color="#888" />
-                <Text style={styles.metaText}>{job.createdAt}</Text>
-              </View>
+              {(job.minWeight || job.maxWeight) && (
+                <View style={styles.infoItem}>
+                  <Text style={styles.infoLabel}>희망 몸무게</Text>
+                  <Text style={styles.infoValue}>
+                    {job.minWeight ? `${job.minWeight}kg` : ''}{job.minWeight && job.maxWeight ? ' ~ ' : ''}{job.maxWeight ? `${job.maxWeight}kg` : ''}
+                  </Text>
+                </View>
+              )}
             </View>
 
-            <Text style={styles.sectionTitle}>상세 설명</Text>
+            <Text style={styles.sectionTitle}>소개</Text>
             <Text style={styles.description}>{job.description}</Text>
 
-            <Text style={styles.sectionTitle}>요구 사항</Text>
-            {job.requirements.map((req, i) => (
-              <View key={i} style={styles.reqItem}>
-                <Ionicons name="checkmark-circle" size={16} color="#FF4B6E" />
-                <Text style={styles.reqText}>{req}</Text>
-              </View>
-            ))}
+            <Text style={styles.sectionTitle}>원하는 성향</Text>
+            <View style={styles.tags}>
+              {job.personalities.map((p, i) => (
+                <View key={i} style={styles.tag}><Text style={styles.tagText}>{p}</Text></View>
+              ))}
+            </View>
 
+            <Text style={styles.sectionTitle}>작성자 성향</Text>
+            <View style={styles.tags}>
+              {job.author.personalities.map((p, i) => (
+                <View key={i} style={[styles.tag, styles.tagAuthor]}>
+                  <Text style={styles.tagAuthorText}>{p}</Text>
+                </View>
+              ))}
+            </View>
             <View style={{ height: 100 }} />
           </ScrollView>
 
@@ -108,66 +121,29 @@ export default function JobDetailModal({ job, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
-  container: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    maxHeight: '90%',
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#ddd',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginTop: 12,
-  },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  container: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, maxHeight: '90%' },
+  handle: { width: 40, height: 4, backgroundColor: '#ddd', borderRadius: 2, alignSelf: 'center', marginTop: 12 },
   headerRow: { flexDirection: 'row', justifyContent: 'flex-end', paddingVertical: 8 },
   closeBtn: { padding: 4 },
-  authorSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
-    padding: 12,
-    backgroundColor: '#fafafa',
-    borderRadius: 12,
-  },
-  avatar: { width: 50, height: 50, borderRadius: 25 },
-  authorName: { fontSize: 15, fontWeight: '600', color: '#111' },
-  authorBio: { fontSize: 13, color: '#666', marginTop: 2, maxWidth: 240 },
-  title: { fontSize: 20, fontWeight: '700', color: '#111', marginBottom: 12 },
-  metaRow: { flexDirection: 'row', gap: 16, marginBottom: 20, flexWrap: 'wrap' },
-  metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  metaText: { fontSize: 13, color: '#666' },
-  sectionTitle: { fontSize: 15, fontWeight: '600', color: '#111', marginBottom: 8 },
+  authorSection: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16, padding: 12, backgroundColor: '#fafafa', borderRadius: 12 },
+  avatar: { width: 52, height: 52, borderRadius: 26 },
+  authorInfo: { flex: 1 },
+  authorName: { fontSize: 16, fontWeight: '600', color: '#111' },
+  authorRegion: { fontSize: 13, color: '#888', marginTop: 3 },
+  title: { fontSize: 20, fontWeight: '700', color: '#111', marginBottom: 14 },
+  infoRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20, backgroundColor: '#fafafa', borderRadius: 12, padding: 14 },
+  infoItem: { minWidth: '45%' },
+  infoLabel: { fontSize: 11, color: '#aaa', marginBottom: 2 },
+  infoValue: { fontSize: 15, fontWeight: '600', color: '#111' },
+  sectionTitle: { fontSize: 15, fontWeight: '600', color: '#111', marginBottom: 10 },
   description: { fontSize: 14, color: '#444', lineHeight: 22, marginBottom: 20 },
-  reqItem: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
-  reqText: { fontSize: 14, color: '#444', flex: 1 },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-  contactBtn: {
-    backgroundColor: '#FF4B6E',
-    borderRadius: 12,
-    paddingVertical: 14,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-  },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
+  tag: { backgroundColor: '#f0f0f0', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6 },
+  tagText: { fontSize: 13, color: '#555' },
+  tagAuthor: { backgroundColor: '#fff0f3' },
+  tagAuthorText: { fontSize: 13, color: '#FF4B6E', fontWeight: '500' },
+  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#f0f0f0' },
+  contactBtn: { backgroundColor: '#FF4B6E', borderRadius: 12, paddingVertical: 14, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8 },
   contactText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 });
